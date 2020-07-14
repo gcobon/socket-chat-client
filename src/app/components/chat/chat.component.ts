@@ -19,7 +19,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.elemento = document.getElementById('chat-mensajes');
 
-    this.chatService.getMessages().subscribe((mssg) => {
+    this.chatSubscription = this.chatService.getMessages().subscribe((mssg) => {
       this.mensajes.push(mssg);
 
       setTimeout(() => {

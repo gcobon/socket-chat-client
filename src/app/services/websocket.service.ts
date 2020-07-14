@@ -2,6 +2,7 @@ import { User } from './../models/usuario.model';
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -11,18 +12,21 @@ export class WebsocketService {
   public socketStatus = false;
   public user: User = null;
 
-  constructor(private socket: Socket) {
+  constructor(
+    private _socket: Socket,
+    private _router: Router) {
     this.loadStorage();
     this.checkStatus();
   }
 
   checkStatus(): void {
-    this.socket.on('connect', () => {
+    this._socket.on('connect', () => {
       console.log('Conectado al servidor');
       this.socketStatus = true;
+      this.loadStorage();
     });
 
-    this.socket.on('disconnect', () => {
+    this._socket.on('disconnect', () => {
       console.log('Desconectado del servidor');
       this.socketStatus = false;
     });
@@ -30,11 +34,11 @@ export class WebsocketService {
 
   emit(evento: string, payload?: any, callback?: Function) {
     console.log('Emitiendo evento');
-    this.socket.emit(evento, payload, callback);
+    this._socket.emit(evento, payload, callback);
   }
 
   listen(evento: string): Observable<any> {
-    return this.socket.fromEvent(evento);
+    return this._socket.fromEvent(evento);
   }
 
   loginWebSocket(nombre: string):Promise<any>{
@@ -46,6 +50,19 @@ export class WebsocketService {
         resolve();
       });
     });
+  }
+
+  logoutWebSocket(){
+      this.user == null;
+      localStorage.removeItem('user');
+
+      const payload ={
+         nombre: 'sin-nombre'
+      }
+
+      this.emit('configurar-usuario', payload, ()=>{});
+
+      this._router.navigateByUrl('');
   }
 
   getUser(){
