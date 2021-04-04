@@ -8,15 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MessagesComponent implements OnInit {
 
-  public user = this._wsService.user;
+  public user = this.wsService.user;
 
-  constructor(private _wsService: WebsocketService) { }
+  constructor(private wsService: WebsocketService) { }
 
   ngOnInit(): void {
   }
 
   logout():void{
-    this._wsService.logoutWebSocket();
+    this.wsService.logoutWebSocket();
   }
 
 }

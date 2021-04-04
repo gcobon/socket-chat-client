@@ -13,20 +13,20 @@ export class WebsocketService {
   public user: User = null;
 
   constructor(
-    private _socket: Socket,
-    private _router: Router) {
+    private socket: Socket,
+    private router: Router) {
     this.loadStorage();
     this.checkStatus();
   }
 
   checkStatus(): void {
-    this._socket.on('connect', () => {
+    this.socket.on('connect', () => {
       console.log('Conectado al servidor');
       this.socketStatus = true;
       this.loadStorage();
     });
 
-    this._socket.on('disconnect', () => {
+    this.socket.on('disconnect', () => {
       console.log('Desconectado del servidor');
       this.socketStatus = false;
     });
@@ -34,11 +34,11 @@ export class WebsocketService {
 
   emit(evento: string, payload?: any, callback?: Function) {
     console.log('Emitiendo evento');
-    this._socket.emit(evento, payload, callback);
+    this.socket.emit(evento, payload, callback);
   }
 
   listen(evento: string): Observable<any> {
-    return this._socket.fromEvent(evento);
+    return this.socket.fromEvent(evento);
   }
 
   loginWebSocket(nombre: string):Promise<any>{
@@ -47,7 +47,7 @@ export class WebsocketService {
 
         this.user = new User(nombre);
         this.saveStorage();
-        resolve();
+        resolve(true);
       });
     });
   }
@@ -62,7 +62,7 @@ export class WebsocketService {
 
       this.emit('configurar-usuario', payload, ()=>{});
 
-      this._router.navigateByUrl('');
+      this.router.navigateByUrl('');
   }
 
   getUser(){
